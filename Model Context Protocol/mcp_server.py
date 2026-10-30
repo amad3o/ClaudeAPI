@@ -1,4 +1,5 @@
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 mcp = FastMCP("DocumentMCP", log_level="ERROR")
 
@@ -12,11 +13,49 @@ docs = {
     "spec.txt": "These specifications define the technical requirements for the equipment.",
 }
 
-# TODO: Write a tool to read a doc
-# TODO: Write a tool to edit a doc
-# TODO: Write a resource to return all doc id's
-# TODO: Write a resource to return the contents of a particular doc
+@mcp.tool(
+    name="read_doc_contents",
+    description="Read the contents of a document and return it as a string"
+)
+def read_document(
+    doc_id: str = Field(description="Id of the document to read")
+):
+    if doc_id not in docs:
+        raise ValueError(f"Doc with {doc_id} not found")
+    return docs[doc_id]
+
+@mcp.tool(
+    name="edit_document",
+    description="Edit a document by replacing a string in the documents content with a new string"
+)
+def edit_document(
+    doc_id: str = Field(description="Id of the document to be edited"),
+    old_str: str = Field(description="The text to replace. Must match exactly, inclduing whitespace"),
+    new_str: str = Field(description="The new text to insert in place of the old text")
+):
+    if doc_id not in docs:
+        raise ValueError(f"Doc with id {doc_id} not found")
+
+    docs[doc_id] = docs[doc_id].replace(old_str, new_str)
+
+@mcp.resource(
+    "docs://documents",
+    mime_type="application/json"
+)
+def list_docs() -> list[str]:
+    return list(docs.keys())
+
+@mcp.resource(
+    "docs://documents/{doc_id}",
+    mime_type="text/plain"
+)
+def fetch_doc(doc_id: str) -> str:
+    if doc_id not in docs:
+        raise ValueError(f"Doc with id {doc_id} not found")
+    return docs[doc_id]
+
 # TODO: Write a prompt to rewrite a doc in markdown format
+
 # TODO: Write a prompt to summarize a doc
 
 
