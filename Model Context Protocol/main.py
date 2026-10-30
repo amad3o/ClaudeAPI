@@ -14,7 +14,7 @@ load_dotenv()
 
 # Anthropic Config
 claude_model = os.getenv("CLAUDE_MODEL", "claude-sonnet-5-5")
-anthropic_api_key = os.getenv("ANTHROPIC_API_KEY", "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")
+anthropic_api_key = os.getenv("ANTHROPIC_API_KEY", "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")
 
 
 assert claude_model, "Error: CLAUDE_MODEL cannot be empty. Update .env"
