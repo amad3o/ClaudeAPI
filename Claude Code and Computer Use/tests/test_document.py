@@ -45,5 +45,6 @@ class TestBinaryDocumentToMarkdown:
         # Basic assertions to check the conversion was successful
         assert isinstance(result, str)
         assert len(result) > 0
-        # Check for typical markdown formatting - this will depend on your actual test file
-        assert "#" in result or "-" in result or "*" in result
+        # markitdown extracts PDF text without markdown syntax, so check content instead
+        for phrase in ["Overview", "Model Context Protocol", "MCP Primitives"]:
+            assert phrase in result

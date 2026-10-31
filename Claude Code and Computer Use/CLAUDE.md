@@ -31,7 +31,7 @@ No linter or formatter is configured.
 
 - `main.py` creates the server (`FastMCP("docs")`) and is the only place where tools are registered. A function in `tools/` is not visible to MCP clients until it is imported and registered here.
 - `tools/` holds plain Python functions, one module per area (`math.py`, `document.py`). They have no MCP dependency, so tests import and call them directly.
-- `tools/document.py`: `binary_document_to_markdown(binary_data, file_type)` wraps `markitdown`, passing the extension via `StreamInfo`. It supports the `docx` and `pdf` extras installed by `markitdown[docx,pdf]`. It is currently **not** registered in `main.py` and does not yet follow the `Field`/docstring conventions below.
+- `tools/document.py`: `binary_document_to_markdown(binary_data, file_type)` wraps `markitdown`, passing the extension via `StreamInfo`. It supports the `docx` and `pdf` extras installed by `markitdown[docx,pdf]`. It is **not** registered in `main.py` and does not follow the `Field`/docstring conventions below. `document_path_to_markdown(file_path)` is the registered MCP tool: it reads the file, rejects unsupported extensions, empty files, and contents whose leading bytes don't match the extension (`ValueError`), then delegates to `binary_document_to_markdown`. The signature check matters because markitdown silently falls back to plain text for garbage input.
 - `tests/fixtures/` contains `mcp_docs.docx` and `mcp_docs.pdf`, used by the document conversion tests.
 
 ## Defining MCP Tools
